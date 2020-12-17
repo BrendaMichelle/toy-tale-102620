@@ -39,28 +39,30 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(newToyObject => {
         renderNewToy(newToyObject)
       })
+
   })
 
-  toyCollectionDiv.addEventListener('click', function (event) {
-    if (event.target.matches('.like-btn')) {
-      const cardDiv = event.target.closest('.card')
-      const id = cardDiv.dataset.id
-      const pTag = cardDiv.querySelector('p')
+  // EVENT DELEGATION APPROACH
+  // toyCollectionDiv.addEventListener('click', function (event) {
+  //   if (event.target.matches('.like-btn')) {
+  //     const cardDiv = event.target.closest('.card')
+  //     const id = cardDiv.dataset.id
+  //     const pTag = cardDiv.querySelector('p')
 
-      fetch(`${url}/${id}`, {
-        method: 'PATCH',
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ likes: parseInt(pTag.textContent) + 1 })
-      })
-        .then(response => response.json())
-        .then(updatedToyObject => {
-          pTag.textContent = `${updatedToyObject.likes} Likes`
-        })
-    }
-  })
+  //     fetch(`${url}/${id}`, {
+  //       method: 'PATCH',
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Accept": "application/json"
+  //       },
+  //       body: JSON.stringify({ likes: parseInt(pTag.textContent) + 1 })
+  //     })
+  //       .then(response => response.json())
+  //       .then(updatedToyObject => {
+  //         pTag.textContent = `${updatedToyObject.likes} Likes`
+  //       })
+  //   }
+  // })
 
 
   /*************** FUNCTIONS ************************/
@@ -87,6 +89,28 @@ document.addEventListener("DOMContentLoaded", () => {
         <button class="like-btn">Like <3</button>`
 
     toyCollectionDiv.append(div)
+
+    // NESTED EVENT LISTENER APPROACH
+    const button = div.querySelector('.like-btn')
+    button.addEventListener('click', function () {
+      const id = toyObject.id
+      const pTag = div.querySelector('p')
+
+      fetch(`${url}/${id}`, {
+        method: 'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ likes: parseInt(pTag.textContent) + 1 })
+      })
+        .then(response => response.json())
+        .then(updatedToyObject => {
+          pTag.textContent = `${updatedToyObject.likes} Likes`
+        })
+
+    })
+
   }
 
   /*************** INITIALIZE ************************/
